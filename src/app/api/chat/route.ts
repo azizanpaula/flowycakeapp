@@ -6,14 +6,14 @@ export async function POST(req: Request) {
   const { userId } = await auth();
 
   if (!userId) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response("Tidak diizinkan", { status: 401 });
   }
 
   if (!process.env.OPENAI_API_KEY) {
     return new Response(
       JSON.stringify({
         error:
-          "OpenAI API key not configured. Please add OPENAI_API_KEY to your environment variables.",
+          "Kunci API OpenAI belum dikonfigurasi. Tambahkan OPENAI_API_KEY ke variabel lingkungan Anda.",
       }),
       {
         status: 500,
@@ -32,11 +32,11 @@ export async function POST(req: Request) {
 
     return result.toDataStreamResponse();
   } catch (error) {
-    console.error("Chat API error:", error);
+    console.error("Kesalahan API chat:", error);
     return new Response(
       JSON.stringify({
         error:
-          "Failed to process chat request. Please check your API configuration.",
+          "Gagal memproses permintaan chat. Periksa kembali konfigurasi API Anda.",
       }),
       {
         status: 500,

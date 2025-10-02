@@ -25,7 +25,7 @@ export default function SetupGuide({ envStatus }: SetupGuideProps) {
       setCopiedVar(text);
       setTimeout(() => setCopiedVar(null), 2000);
     } catch (err) {
-      console.error("Failed to copy to clipboard:", err);
+      console.error("Gagal menyalin ke clipboard:", err);
     }
   };
 
@@ -45,10 +45,9 @@ export default function SetupGuide({ envStatus }: SetupGuideProps) {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold mb-4">🚀 Setup Your Environment</h2>
+        <h2 className="text-3xl font-bold mb-4">🚀 Siapkan Lingkungan Anda</h2>
         <p className="text-gray-600 dark:text-gray-400">
-          Configure these services to unlock the full potential of your starter
-          kit
+          Konfigurasikan layanan berikut untuk memaksimalkan kemampuan starter kit Anda
         </p>
       </div>
 
@@ -77,7 +76,7 @@ export default function SetupGuide({ envStatus }: SetupGuideProps) {
                     </h3>
                     {isConfigured && (
                       <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                        Configured
+                        Terkonfigurasi
                       </span>
                     )}
                   </div>
@@ -89,7 +88,7 @@ export default function SetupGuide({ envStatus }: SetupGuideProps) {
                   {!isConfigured && (
                     <>
                       <div className="mb-4">
-                        <h4 className="font-medium mb-2">Setup Steps:</h4>
+                        <h4 className="font-medium mb-2">Langkah Pengaturan:</h4>
                         <ol className="list-decimal list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
                           {instruction.steps.map((step, stepIndex) => (
                             <li key={stepIndex}>{step}</li>
@@ -99,7 +98,7 @@ export default function SetupGuide({ envStatus }: SetupGuideProps) {
 
                       <div className="mb-4">
                         <h4 className="font-medium mb-2">
-                          Environment Variables:
+                          Variabel Lingkungan:
                         </h4>
                         <div className="space-y-2">
                           {instruction.envVars.map((envVar) => (
@@ -108,7 +107,7 @@ export default function SetupGuide({ envStatus }: SetupGuideProps) {
                               className="flex items-center gap-2"
                             >
                               <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono flex-1">
-                                {envVar}=your_value_here
+                                {envVar}=nilai_anda_di_sini
                               </code>
                               <Button
                                 size="sm"
@@ -142,7 +141,7 @@ export default function SetupGuide({ envStatus }: SetupGuideProps) {
                           );
                         }}
                       >
-                        Open {instruction.service} Dashboard
+                        Buka Dasbor {instruction.service}
                         <ExternalLink className="w-4 h-4 ml-2" />
                       </Button>
                     </>
@@ -159,11 +158,10 @@ export default function SetupGuide({ envStatus }: SetupGuideProps) {
           <div className="text-center">
             <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-green-800 dark:text-green-400 mb-2">
-              🎉 All Set!
+              🎉 Semua Siap!
             </h3>
             <p className="text-green-700 dark:text-green-300">
-              Your environment is fully configured. The AI chat feature is now
-              available!
+              Lingkungan Anda sudah sepenuhnya dikonfigurasi. Fitur chat AI kini tersedia!
             </p>
           </div>
         </Card>
@@ -171,18 +169,18 @@ export default function SetupGuide({ envStatus }: SetupGuideProps) {
 
       <Card className="p-6 bg-blue-50 dark:bg-blue-900/20 border-blue-200">
         <h3 className="font-semibold mb-2 text-blue-800 dark:text-blue-400">
-          💡 Pro Tip
+          💡 Tips
         </h3>
         <p className="text-sm text-blue-700 dark:text-blue-300">
-          After adding your environment variables to{" "}
+          Setelah menambahkan variabel lingkungan Anda ke{" "}
           <code className="bg-blue-100 dark:bg-blue-800 px-1 py-0.5 rounded">
             .env.local
           </code>
-          , restart your development server with{" "}
+          , jalankan ulang server pengembangan Anda dengan perintah{" "}
           <code className="bg-blue-100 dark:bg-blue-800 px-1 py-0.5 rounded">
             npm run dev
           </code>
-          for the changes to take effect.
+          agar perubahan diterapkan.
         </p>
       </Card>
     </div>

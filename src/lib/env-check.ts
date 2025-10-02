@@ -25,7 +25,7 @@ export function checkEnvironmentVariables() {
     allConfigured: false,
   };
 
-  status.allConfigured = status.clerk && status.supabase && status.ai;
+  status.allConfigured = status.clerk && status.supabase;
 
   return status;
 }
@@ -34,31 +34,31 @@ export function getSetupInstructions() {
   return [
     {
       service: "Clerk",
-      description: "Authentication service for user management",
+      description: "Layanan autentikasi untuk manajemen pengguna",
       steps: [
-        "Go to https://dashboard.clerk.com/",
-        "Create a new application",
-        "Copy NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY to .env.local",
+        "Kunjungi https://dashboard.clerk.com/",
+        "Buat aplikasi baru",
+        "Salin NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY dan CLERK_SECRET_KEY ke .env.local",
       ],
       envVars: ["NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", "CLERK_SECRET_KEY"],
     },
     {
       service: "Supabase",
-      description: "Database and real-time subscriptions",
+      description: "Basis data dan langganan real-time",
       steps: [
-        "Go to https://supabase.com/dashboard",
-        "Create a new project",
-        "Copy NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local",
+        "Kunjungi https://supabase.com/dashboard",
+        "Buat proyek baru",
+        "Salin NEXT_PUBLIC_SUPABASE_URL dan NEXT_PUBLIC_SUPABASE_ANON_KEY ke .env.local",
       ],
       envVars: ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY"],
     },
     {
       service: "OpenAI",
-      description: "AI language model for chat functionality",
+      description: "Model bahasa AI untuk fitur chat",
       steps: [
-        "Go to https://platform.openai.com/",
-        "Create an API key",
-        "Copy OPENAI_API_KEY to .env.local",
+        "Kunjungi https://platform.openai.com/",
+        "Buat kunci API",
+        "Salin OPENAI_API_KEY ke .env.local",
       ],
       envVars: ["OPENAI_API_KEY"],
     },

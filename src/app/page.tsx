@@ -1,24 +1,30 @@
 "use client";
 
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import Chat from "@/components/chat";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { checkEnvironmentVariables } from "@/lib/env-check";
 import {
-  Copy,
   CheckCircle,
-  AlertCircle,
   Zap,
   Database,
   Shield,
   ExternalLink,
+  Cake,
 } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
-import Image from "next/image";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 export default function Home() {
-  const envStatus = checkEnvironmentVariables();
+  const [envStatus, setEnvStatus] = useState({
+    clerk: false,
+    supabase: false,
+    ai: false,
+    allConfigured: false,
+  });
+
+  useEffect(() => {
+    setEnvStatus(checkEnvironmentVariables());
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -26,34 +32,35 @@ export default function Home() {
       <div className="text-center py-12 sm:py-16 relative px-4">
         <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
           <div className="flex items-center gap-2 sm:gap-3">
-            <ThemeToggle />
-            <SignedOut>
-              <SignInButton>
+            <SignedIn>
+              <Link href="/dashboard/cakeflow">
                 <Button size="sm" className="text-xs sm:text-sm">
-                  Sign In
+                  <Cake className="w-4 h-4 mr-1" />
+                  Dasbor
+                </Button>
+              </Link>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <Button size="sm" variant="outline" className="text-xs sm:text-sm">
+                  Masuk
                 </Button>
               </SignInButton>
             </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
           </div>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4">
-          <Image
-            src="/codeguide-logo.png"
-            alt="CodeGuide Logo"
-            width={50}
-            height={50}
-            className="rounded-xl sm:w-[60px] sm:h-[60px]"
-          />
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 bg-clip-text text-transparent font-parkinsans">
-            CodeGuide Starter
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center">
+            <Cake className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+          </div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-pink-600 via-purple-500 to-blue-400 bg-clip-text text-transparent">
+            CakeFlow
           </h1>
         </div>
         <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
-          Build faster with your AI coding agent
+          Aplikasi Manajemen Usaha Kue Modern
         </p>
       </div>
 
@@ -61,20 +68,35 @@ export default function Home() {
         {envStatus.allConfigured ? (
           <div className="text-center mb-8">
             <div className="text-4xl sm:text-5xl mb-2">🎉</div>
-            <div className="font-bold text-lg sm:text-xl mb-1">All Set!</div>
-            <div className="text-sm sm:text-base text-muted-foreground">
-              Ready for development
+            <div className="font-bold text-lg sm:text-xl mb-1">Semua Siap!</div>
+            <div className="text-sm sm:text-base text-muted-foreground mb-6">
+              Aplikasi siap digunakan
             </div>
+            <SignedIn>
+              <Link href="/dashboard/cakeflow">
+                <Button size="lg" className="text-base">
+                  <Cake className="w-5 h-5 mr-2" />
+                  Buka Dasbor CakeFlow
+                </Button>
+              </Link>
+            </SignedIn>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <Button size="lg" className="text-base">
+                  Masuk untuk Mulai
+                </Button>
+              </SignInButton>
+            </SignedOut>
           </div>
         ) : (
           <>
             <div className="text-center mb-6">
               <div className="text-4xl sm:text-5xl mb-2">⚠️</div>
               <div className="font-semibold text-lg sm:text-xl mb-1">
-                Setup Required
+                Setup Diperlukan
               </div>
               <div className="text-sm sm:text-base text-muted-foreground">
-                Retrieve keys for environment variables
+                Ambil key untuk variabel lingkungan
               </div>
             </div>
 
@@ -89,10 +111,10 @@ export default function Home() {
                   )}
                 </div>
                 <div className="font-semibold mb-2 text-sm sm:text-base">
-                  Clerk Auth
+                  Autentikasi Clerk
                 </div>
                 <div className="text-xs text-muted-foreground mb-3">
-                  {envStatus.clerk ? "✓ Ready" : "Setup required"}
+                  {envStatus.clerk ? "✓ Siap" : "Perlu pengaturan"}
                 </div>
                 <Button
                   size="sm"
@@ -103,7 +125,7 @@ export default function Home() {
                   className="w-full text-xs sm:text-sm"
                 >
                   <ExternalLink className="w-3 h-3 mr-1" />
-                  Dashboard
+                  Dasbor
                 </Button>
               </div>
 
@@ -117,10 +139,10 @@ export default function Home() {
                   )}
                 </div>
                 <div className="font-semibold mb-2 text-sm sm:text-base">
-                  Supabase DB
+                  Basis Data Supabase
                 </div>
                 <div className="text-xs text-muted-foreground mb-3">
-                  {envStatus.supabase ? "✓ Ready" : "Setup required"}
+                  {envStatus.supabase ? "✓ Siap" : "Perlu pengaturan"}
                 </div>
                 <Button
                   size="sm"
@@ -131,7 +153,7 @@ export default function Home() {
                   className="w-full text-xs sm:text-sm"
                 >
                   <ExternalLink className="w-3 h-3 mr-1" />
-                  Dashboard
+                  Dasbor
                 </Button>
               </div>
 
@@ -145,10 +167,10 @@ export default function Home() {
                   )}
                 </div>
                 <div className="font-semibold mb-2 text-sm sm:text-base">
-                  AI SDK
+                  SDK AI
                 </div>
                 <div className="text-xs text-muted-foreground mb-3">
-                  {envStatus.ai ? "✓ Ready" : "Optional"}
+                  {envStatus.ai ? "✓ Siap" : "Opsional"}
                 </div>
                 <div className="grid grid-cols-2 gap-1 sm:gap-2">
                   <Button
@@ -176,15 +198,6 @@ export default function Home() {
             </div>
           </>
         )}
-
-        {/* Chat Section */}
-        <SignedIn>
-          {envStatus.allConfigured && (
-            <div className="mt-6 sm:mt-8">
-              <Chat />
-            </div>
-          )}
-        </SignedIn>
       </main>
     </div>
   );

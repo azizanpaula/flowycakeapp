@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Parkinsans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "sonner";
+import { Geist, Geist_Mono, Parkinsans } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,22 +18,23 @@ const geistMono = Geist_Mono({
 const parkinsans = Parkinsans({
   variable: "--font-parkinsans",
   subsets: ["latin"],
+  adjustFontFallback: false,
+  fallback: ["sans-serif"],
 });
 
 export const metadata: Metadata = {
-  title: "CodeGuide Starter Kit",
-  description:
-    "A modern Next.js starter with TypeScript, TailwindCSS, shadcn/ui, Vercel AI SDK, Clerk, and Supabase",
+  title: "CakeFlow - Aplikasi Manajemen Usaha Kue",
+  description: "Aplikasi modern untuk manajemen usaha kue dengan POS, inventory, dan reporting",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="id" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${parkinsans.variable} antialiased`}
         >
@@ -43,6 +45,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <Toaster richColors position="top-right" />
           </ThemeProvider>
         </body>
       </html>
