@@ -114,6 +114,15 @@ export default async function ProfilePage() {
   }
 
   const canManageRole = user.role === "admin"
+  const fallbackName = [user.firstName, user.lastName]
+    .filter(Boolean)
+    .join(" ")
+    .trim()
+  const displayName =
+    profile.full_name
+    ?? (fallbackName.length > 0 ? fallbackName : undefined)
+    ?? user.email
+    ?? profile.id
 
   return (
     <div className="container mx-auto px-4 py-10 max-w-5xl">
@@ -126,7 +135,7 @@ export default async function ProfilePage() {
           <CardContent className="space-y-4">
             <InfoRow
               label="Nama Lengkap"
-              value={profile.full_name ?? `${user.firstName} ${user.lastName}`.trim() || user.email || profile.id}
+              value={displayName}
               icon={<UserIcon className="w-4 h-4" />}
             />
             <InfoRow
