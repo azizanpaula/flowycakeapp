@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -9,9 +9,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { createCategory, updateCategory, type Category } from "@/lib/database"
+import type { Category } from "@/lib/database"
 import { Loader2, Save, Palette } from "lucide-react"
 import { toast } from "sonner"
+import { createCategoryAction, updateCategoryAction } from "@/app/dashboard/categories/actions"
 
 const categorySchema = z.object({
   name: z.string().min(1, "Nama wajib diisi").max(50, "Nama tidak boleh lebih dari 50 karakter"),
@@ -42,6 +43,7 @@ const predefinedColors = [
 
 export function CategoryForm({ category, mode = "create", onSuccess }: CategoryFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const router = useRouter()
 
   const form = useForm<CategoryFormData>({

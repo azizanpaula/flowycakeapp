@@ -10,7 +10,7 @@ type ResolvedUser = {
 };
 
 async function resolveUser(): Promise<ResolvedUser | null> {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (userId) {
     return { id: userId };

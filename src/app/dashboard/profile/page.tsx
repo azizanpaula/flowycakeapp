@@ -119,10 +119,10 @@ export default async function ProfilePage() {
     .join(" ")
     .trim()
   const displayName =
-    profile.full_name
-    ?? (fallbackName.length > 0 ? fallbackName : undefined)
-    ?? user.email
-    ?? profile.id
+    profile.full_name ??
+    (fallbackName.length > 0 ? fallbackName : undefined) ??
+    user.email ??
+    profile.id
 
   return (
     <div className="container mx-auto px-4 py-10 max-w-5xl">
