@@ -89,7 +89,6 @@ export function ProductionLogForm({ recipes, products }: ProductionLogFormProps)
     try {
       const transformedValues = {
         ...values,
-        recipe_id: !values.recipe_id || values.recipe_id === NO_RECIPE_VALUE ? undefined : values.recipe_id,
         batch_number: values.batch_number === "" ? undefined : values.batch_number,
         notes: values.notes === "" ? undefined : values.notes,
       }
@@ -112,7 +111,7 @@ export function ProductionLogForm({ recipes, products }: ProductionLogFormProps)
 
       toast.success("Produksi berhasil dicatat")
       form.reset({
-        recipe_id: values.recipe_id ?? NO_RECIPE_VALUE,
+        recipe_id: values.recipe_id,
         product_id: values.product_id,
         quantity_produced: 1,
         batch_number: undefined,
