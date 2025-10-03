@@ -40,10 +40,7 @@ const recipeSchema = z.object({
     .union([z.string().max(400, "Deskripsi terlalu panjang"), z.literal("")])
     .optional()
     .transform((value) => (value === "" ? undefined : value?.trim() || undefined)),
-  preparation_time: z
-    .union([z.coerce.number().min(0, "Minimal 0 menit"), z.literal("")])
-    .optional()
-    .transform((value) => (value === "" ? undefined : value)),
+  preparation_time: z.coerce.number().min(0, "Minimal 0 menit").optional(),
   items: z.array(recipeItemSchema).min(1, "Minimal 1 bahan untuk resep"),
 })
 
