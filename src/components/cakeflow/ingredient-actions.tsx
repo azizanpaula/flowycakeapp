@@ -46,16 +46,13 @@ const ingredientSchema = z.object({
   current_stock: z.coerce.number({ invalid_type_error: "Stok harus berupa angka" }).min(0, "Minimal 0"),
   low_stock_threshold: z
     .union([z.coerce.number().min(0, "Minimal 0"), z.literal("")])
-    .optional()
-    .transform((value) => (value === "" ? undefined : value)),
+    .optional(),
   purchase_price: z
     .union([z.coerce.number({ invalid_type_error: "Harga harus berupa angka" }).min(0, "Harga minimal 0"), z.literal("")])
-    .optional()
-    .transform((value) => (value === "" ? undefined : value)),
+    .optional(),
   purchase_quantity: z
     .union([z.coerce.number({ invalid_type_error: "Jumlah harus berupa angka" }).positive("Minimal 0.01"), z.literal("")])
-    .optional()
-    .transform((value) => (value === "" ? undefined : value)),
+    .optional(),
   purchase_unit: z.string().max(20).optional(),
 })
 
@@ -112,15 +109,22 @@ export function IngredientActions({ ingredient }: IngredientActionsProps) {
 
   const handleSubmit = form.handleSubmit((values) => {
     startTransition(async () => {
+      const transformedValues = {
+        ...values,
+        low_stock_threshold: values.low_stock_threshold === "" ? undefined : values.low_stock_threshold,
+        purchase_price: values.purchase_price === "" ? undefined : values.purchase_price,
+        purchase_quantity: values.purchase_quantity === "" ? undefined : values.purchase_quantity,
+      }
+
       const result = await updateIngredientAction({
         id: ingredient.id,
-        name: values.name.trim(),
-        unit: values.unit.trim(),
-        current_stock: values.current_stock,
-        low_stock_threshold: values.low_stock_threshold,
-        purchase_price: values.purchase_price,
-        purchase_quantity: values.purchase_quantity,
-        purchase_unit: values.purchase_unit?.trim() || values.unit.trim(),
+        name: transformedValues.name.trim(),
+        unit: transformedValues.unit.trim(),
+        current_stock: transformedValues.current_stock,
+        low_stock_threshold: transformedValues.low_stock_threshold,
+        purchase_price: transformedValues.purchase_price,
+        purchase_quantity: transformedValues.purchase_quantity,
+        purchase_unit: transformedValues.purchase_unit?.trim() || transformedValues.unit.trim(),
       })
 
       if (!result.success) {

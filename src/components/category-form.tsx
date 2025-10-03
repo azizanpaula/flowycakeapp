@@ -63,29 +63,29 @@ export function CategoryForm({ category, mode = "create", onSuccess }: CategoryF
     try {
       let result
       if (mode === "edit" && category) {
-        result = await updateCategory(category.id, data)
+        result = await updateCategoryAction(category.id, data)
       } else {
-        result = await createCategory(data)
+        result = await createCategoryAction(data)
       }
 
-      if (result) {
-        const successMessage = mode === "edit" 
-          ? "Kategori berhasil diperbarui!" 
+      if (result.success) {
+        const successMessage = mode === "edit"
+          ? "Kategori berhasil diperbarui!"
           : "Kategori berhasil dibuat!"
         toast.success(successMessage)
         form.reset()
         router.refresh()
         onSuccess?.()
       } else {
-        const errorMessage = mode === "edit" 
+        const errorMessage = mode === "edit"
           ? "Gagal memperbarui kategori"
           : "Gagal membuat kategori"
-        toast.error(errorMessage)
+        toast.error(result.message || errorMessage)
       }
     } catch (error) {
       const actionVerb = mode === "edit" ? "memperbarui" : "membuat"
       console.error(`Kesalahan saat ${actionVerb} kategori:`, error)
-      const errorMessage = mode === "edit" 
+      const errorMessage = mode === "edit"
         ? "Gagal memperbarui kategori"
         : "Gagal membuat kategori"
       toast.error(errorMessage)

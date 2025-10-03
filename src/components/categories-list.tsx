@@ -4,7 +4,8 @@ import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { deleteCategory, type Category } from "@/lib/database"
+import { type Category } from "@/lib/database"
+import { deleteCategoryAction } from "@/app/dashboard/categories/actions"
 import { 
   MoreHorizontal,
   Edit,
@@ -51,13 +52,13 @@ export function CategoriesList({ categories }: CategoriesListProps) {
 
   const handleDeleteCategory = async (category: Category) => {
     try {
-      const result = await deleteCategory(category.id)
+      const result = await deleteCategoryAction(category.id)
 
-      if (result) {
+      if (result.success) {
         toast.success("Kategori berhasil dihapus")
         router.refresh()
       } else {
-        toast.error("Gagal menghapus kategori")
+        toast.error(result.message || "Gagal menghapus kategori")
       }
     } catch (error) {
       console.error("Kesalahan saat menghapus kategori:", error)

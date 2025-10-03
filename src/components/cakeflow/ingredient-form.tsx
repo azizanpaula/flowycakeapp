@@ -18,16 +18,13 @@ const ingredientSchema = z.object({
   unit: z.string().min(1, "Satuan wajib diisi").max(20, "Satuan terlalu panjang"),
   low_stock_threshold: z
     .union([z.coerce.number().min(0, "Batas minimal 0"), z.literal("")])
-    .optional()
-    .transform((value) => (value === "" ? undefined : value)),
+    .optional(),
   purchase_price: z
     .union([z.coerce.number({ invalid_type_error: "Harga harus berupa angka" }).min(0, "Harga minimal 0"), z.literal("")])
-    .optional()
-    .transform((value) => (value === "" ? undefined : value)),
+    .optional(),
   purchase_quantity: z
     .union([z.coerce.number({ invalid_type_error: "Jumlah harus berupa angka" }).positive("Minimal 0.01"), z.literal("")])
-    .optional()
-    .transform((value) => (value === "" ? undefined : value)),
+    .optional(),
   purchase_unit: z.string().max(20).optional(),
 })
 
@@ -65,14 +62,21 @@ export function IngredientForm() {
     setIsSubmitting(true)
 
     try {
+      const transformedValues = {
+        ...values,
+        low_stock_threshold: values.low_stock_threshold === "" ? undefined : values.low_stock_threshold,
+        purchase_price: values.purchase_price === "" ? undefined : values.purchase_price,
+        purchase_quantity: values.purchase_quantity === "" ? undefined : values.purchase_quantity,
+      }
+
       const result = await createIngredient({
-        name: values.name.trim(),
-        current_stock: values.current_stock,
-        unit: values.unit.trim(),
-        low_stock_threshold: values.low_stock_threshold,
-        purchase_price: values.purchase_price,
-        purchase_quantity: values.purchase_quantity,
-        purchase_unit: values.purchase_unit?.trim() || values.unit.trim(),
+        name: transformedValues.name.trim(),
+        current_stock: transformedValues.current_stock,
+        unit: transformedValues.unit.trim(),
+        low_stock_threshold: transformedValues.low_stock_threshold,
+        purchase_price: transformedValues.purchase_price,
+        purchase_quantity: transformedValues.purchase_quantity,
+        purchase_unit: transformedValues.purchase_unit?.trim() || transformedValues.unit.trim(),
       })
 
       if (!result) {

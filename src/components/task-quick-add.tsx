@@ -4,7 +4,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { createTask, type Category } from "@/lib/database"
+import { type Category } from "@/lib/database"
+import { createTaskAction } from "@/app/dashboard/tasks/actions"
 import { Plus, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -33,20 +34,20 @@ export function TaskQuickAdd({ categories }: TaskQuickAddProps) {
     setIsLoading(true)
 
     try {
-      const task = await createTask({
+      const result = await createTaskAction({
         title: title.trim(),
         priority,
         category_id: categoryId === UNCATEGORIZED_VALUE ? undefined : categoryId,
       })
 
-      if (task) {
+      if (result.success) {
         toast.success("Tugas berhasil dibuat!")
         setTitle("")
         setPriority("medium")
         setCategoryId(UNCATEGORIZED_VALUE)
         router.refresh()
       } else {
-        toast.error("Gagal membuat tugas")
+        toast.error(result.message || "Gagal membuat tugas")
       }
     } catch (error) {
       console.error("Kesalahan saat membuat tugas:", error)

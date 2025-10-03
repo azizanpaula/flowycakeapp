@@ -4,7 +4,8 @@ import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { updateTask, type Task } from "@/lib/database"
+import { type Task } from "@/lib/database"
+import { updateTaskAction } from "@/app/dashboard/tasks/actions"
 import { 
   CheckCircle, 
   Clock, 
@@ -56,13 +57,13 @@ export function RecentTasks({ tasks }: RecentTasksProps) {
 
     try {
       const newStatus = completed ? 'completed' : 'pending'
-      const result = await updateTask(taskId, { status: newStatus })
+      const result = await updateTaskAction(taskId, { status: newStatus })
 
-      if (result) {
+      if (result.success) {
         toast.success(`Tugas ditandai sebagai ${statusLabels[newStatus].toLowerCase()}`)
         router.refresh()
       } else {
-        toast.error("Gagal memperbarui tugas")
+        toast.error(result.message || "Gagal memperbarui tugas")
       }
     } catch (error) {
       console.error("Kesalahan saat memperbarui tugas:", error)

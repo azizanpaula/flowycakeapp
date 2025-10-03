@@ -69,3 +69,21 @@ export async function updateTaskAction(taskId: string, updates: {
   revalidatePath('/dashboard')
   return { success: true }
 }
+
+export async function deleteTaskAction(taskId: string) {
+  const supabase = await createSupabaseServerClient()
+
+  const { error } = await supabase
+    .from('tasks')
+    .delete()
+    .eq('id', taskId)
+
+  if (error) {
+    console.error('Error deleting task:', error)
+    return { success: false, message: "Gagal menghapus tugas" }
+  }
+
+  revalidatePath('/dashboard/tasks')
+  revalidatePath('/dashboard')
+  return { success: true }
+}

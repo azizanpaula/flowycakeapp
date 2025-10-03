@@ -90,7 +90,7 @@ export default async function ProfilePage() {
 
   let profile = await getProfile()
   if (!profile) {
-    profile = await createOrUpdateProfile({}) ?? undefined
+    profile = await createOrUpdateProfile({})
   }
 
   if (!profile) {

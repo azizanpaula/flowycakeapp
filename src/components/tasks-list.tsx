@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent } from "@/components/ui/card"
-import { updateTask, deleteTask, type Task } from "@/lib/database"
+import { type Task } from "@/lib/database"
+import { updateTaskAction, deleteTaskAction } from "@/app/dashboard/tasks/actions"
 import { 
   CheckCircle, 
   Clock, 
@@ -80,13 +81,13 @@ export function TasksList({ tasks }: TasksListProps) {
     setUpdatingTasks(prev => new Set(prev).add(taskId))
 
     try {
-      const result = await updateTask(taskId, { status: newStatus })
+      const result = await updateTaskAction(taskId, { status: newStatus })
 
-      if (result) {
+      if (result.success) {
         toast.success(`Tugas ditandai sebagai ${statusConfig[newStatus].label.toLowerCase()}`)
         router.refresh()
       } else {
-        toast.error("Gagal memperbarui tugas")
+        toast.error(result.message || "Gagal memperbarui tugas")
       }
     } catch (error) {
       console.error("Kesalahan saat memperbarui tugas:", error)
@@ -102,13 +103,13 @@ export function TasksList({ tasks }: TasksListProps) {
 
   const handleDeleteTask = async (task: Task) => {
     try {
-      const result = await deleteTask(task.id)
+      const result = await deleteTaskAction(task.id)
 
-      if (result) {
+      if (result.success) {
         toast.success("Tugas berhasil dihapus")
         router.refresh()
       } else {
-        toast.error("Gagal menghapus tugas")
+        toast.error(result.message || "Gagal menghapus tugas")
       }
     } catch (error) {
       console.error("Kesalahan saat menghapus tugas:", error)

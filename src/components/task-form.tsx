@@ -12,7 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { createTask, updateTask, type Category, type Task } from "@/lib/database"
+import { type Category, type Task } from "@/lib/database"
+import { createTaskAction, updateTaskAction } from "@/app/dashboard/tasks/actions"
 import { CalendarIcon, Loader2, Save } from "lucide-react"
 import { format } from "date-fns"
 import { id as localeId } from "date-fns/locale"
@@ -68,26 +69,26 @@ export function TaskForm({ categories, task, mode = "create" }: TaskFormProps) {
 
       let result
       if (mode === "edit" && task) {
-        result = await updateTask(task.id, {
+        result = await updateTaskAction(task.id, {
           ...taskData,
           status: data.status,
         })
       } else {
-        result = await createTask(taskData)
+        result = await createTaskAction(taskData)
       }
 
-      if (result) {
-        const successMessage = mode === "edit" 
+      if (result.success) {
+        const successMessage = mode === "edit"
           ? "Tugas berhasil diperbarui!"
           : "Tugas berhasil dibuat!"
         toast.success(successMessage)
         router.push("/dashboard/tasks")
         router.refresh()
       } else {
-        const errorMessage = mode === "edit" 
+        const errorMessage = mode === "edit"
           ? "Gagal memperbarui tugas"
           : "Gagal membuat tugas"
-        toast.error(errorMessage)
+        toast.error(result.message || errorMessage)
       }
     } catch (error) {
       const actionVerb = mode === "edit" ? "memperbarui" : "membuat"

@@ -19,16 +19,13 @@ const productSchema = z.object({
   current_stock: z.coerce.number({ invalid_type_error: "Stok harus berupa angka" }).min(0, "Stok minimal 0"),
   low_stock_threshold: z
     .union([z.coerce.number().min(0, "Batas minimal 0"), z.literal("")])
-    .optional()
-    .transform((value) => (value === "" ? undefined : value)),
+    .optional(),
   image_url: z
     .union([z.string().url("URL tidak valid"), z.literal("")])
-    .optional()
-    .transform((value) => (value === "" ? undefined : value)),
+    .optional(),
   description: z
     .union([z.string().max(300, "Deskripsi terlalu panjang"), z.literal("")])
-    .optional()
-    .transform((value) => (value === "" ? undefined : value)),
+    .optional(),
 })
 
 type ProductFormData = z.infer<typeof productSchema>
@@ -53,13 +50,20 @@ export function ProductForm() {
     setIsSubmitting(true)
 
     try {
+      const transformedValues = {
+        ...values,
+        low_stock_threshold: values.low_stock_threshold === "" ? undefined : values.low_stock_threshold,
+        image_url: values.image_url === "" ? undefined : values.image_url,
+        description: values.description === "" ? undefined : values.description,
+      }
+
       const result = await createProduct({
-        name: values.name.trim(),
-        price: values.price,
-        current_stock: values.current_stock,
-        low_stock_threshold: values.low_stock_threshold,
-        image_url: values.image_url,
-        description: values.description?.trim(),
+        name: transformedValues.name.trim(),
+        price: transformedValues.price,
+        current_stock: transformedValues.current_stock,
+        low_stock_threshold: transformedValues.low_stock_threshold,
+        image_url: transformedValues.image_url,
+        description: transformedValues.description?.trim(),
       })
 
       if (!result) {

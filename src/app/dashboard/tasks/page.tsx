@@ -9,37 +9,38 @@ import { TasksFilter } from "@/components/tasks-filter"
 import { TasksList } from "@/components/tasks-list"
 
 interface TasksPageProps {
-  searchParams: {
+  searchParams: Promise<{
     status?: string
     category?: string
     priority?: string
     search?: string
-  }
+  }>
 }
 
-async function TasksContent({ searchParams }: TasksPageProps) {
+async function TasksContent({ searchParams }: { searchParams: TasksPageProps['searchParams'] }) {
+  const params = await searchParams
   const [tasks, categories] = await Promise.all([
     getTasks({
-      status: searchParams.status,
-      category_id: searchParams.category,
-      priority: searchParams.priority,
+      status: params.status,
+      category_id: params.category,
+      priority: params.priority,
     }),
     getCategories()
   ])
 
   // Filter by search term if provided
-  const filteredTasks = searchParams.search
-    ? tasks.filter(task => 
-        task.title.toLowerCase().includes(searchParams.search!.toLowerCase()) ||
-        task.description?.toLowerCase().includes(searchParams.search!.toLowerCase())
+  const filteredTasks = params.search
+    ? tasks.filter(task =>
+        task.title.toLowerCase().includes(params.search!.toLowerCase()) ||
+        task.description?.toLowerCase().includes(params.search!.toLowerCase())
       )
     : tasks
 
   const activeFilters = {
-    status: searchParams.status,
-    category: searchParams.category,
-    priority: searchParams.priority,
-    search: searchParams.search,
+    status: params.status,
+    category: params.category,
+    priority: params.priority,
+    search: params.search,
   }
 
   const activeFilterCount = Object.values(activeFilters).filter(Boolean).length
