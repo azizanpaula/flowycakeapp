@@ -1,3 +1,4 @@
+import "server-only"
 import { currentUser } from "@clerk/nextjs/server"
 
 export type AppUserRole = "admin" | "kasir" | "staf_dapur"
