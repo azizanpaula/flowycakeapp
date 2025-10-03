@@ -6,7 +6,7 @@ import { type ThemeProviderProps } from "next-themes";
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
-    <NextThemesProvider {...props} suppressHydrationWarning>
+    <NextThemesProvider {...props}>
       {children}
     </NextThemesProvider>
   );
