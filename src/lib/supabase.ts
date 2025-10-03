@@ -41,6 +41,5 @@ export async function createSupabaseServerClient() {
       persistSession: false,
       autoRefreshToken: false,
     },
-    global: withNoStoreFetch,
   });
 }
