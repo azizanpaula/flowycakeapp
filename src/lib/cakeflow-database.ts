@@ -805,7 +805,7 @@ export async function getOrderItems(orderId: number) {
 // =============================================
 
 export async function logProduction(productionData: {
-  recipe_id: string
+  recipe_id?: string
   product_id: string
   quantity_produced: number
   batch_number?: string
@@ -813,22 +813,24 @@ export async function logProduction(productionData: {
 }, userId?: string) {
   const supabase = await createSupabaseServerClient()
 
-  // Get recipe items to calculate costs and update ingredient stock
-  const recipeItems = await getRecipeItems(productionData.recipe_id)
-
   let totalCost = 0
-  for (const item of recipeItems) {
-    const ingredientCost = item.quantity_needed * productionData.quantity_produced * item.ingredient!.average_cost
-    totalCost += ingredientCost
+  if (productionData.recipe_id) {
+    // Get recipe items to calculate costs and update ingredient stock
+    const recipeItems = await getRecipeItems(productionData.recipe_id)
 
-    // Update ingredient stock
-    const { error: stockError } = await supabase.rpc('decrement_ingredient_stock', {
-      ingredient_id: item.ingredient_id,
-      quantity: item.quantity_needed * productionData.quantity_produced
-    })
+    for (const item of recipeItems) {
+      const ingredientCost = item.quantity_needed * productionData.quantity_produced * item.ingredient!.average_cost
+      totalCost += ingredientCost
 
-    if (stockError) {
-      console.error('Error updating ingredient stock:', stockError)
+      // Update ingredient stock
+      const { error: stockError } = await supabase.rpc('decrement_ingredient_stock', {
+        ingredient_id: item.ingredient_id,
+        quantity: item.quantity_needed * productionData.quantity_produced
+      })
+
+      if (stockError) {
+        console.error('Error updating ingredient stock:', stockError)
+      }
     }
   }
 

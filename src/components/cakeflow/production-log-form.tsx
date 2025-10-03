@@ -14,8 +14,6 @@ import { logProduction } from "@/lib/cakeflow-database"
 import { Loader2, Save } from "lucide-react"
 import { toast } from "sonner"
 
-const NO_RECIPE_VALUE = "__none__"
-
 type RecipeOption = {
   id: string
   name: string
@@ -29,22 +27,17 @@ type ProductOption = {
 }
 
 const productionSchema = z.object({
-  recipe_id: z
-    .union([z.string().min(1), z.literal(NO_RECIPE_VALUE)])
-    .optional()
-    .transform((value) => (!value || value === NO_RECIPE_VALUE ? undefined : value)),
+  recipe_id: z.string().min(1, "Resep wajib dipilih"),
   product_id: z.string().min(1, "Produk wajib dipilih"),
   quantity_produced: z.coerce
     .number({ invalid_type_error: "Jumlah harus berupa angka" })
     .min(1, "Minimal 1 unit"),
   batch_number: z
     .union([z.string().max(50, "Kode batch terlalu panjang"), z.literal("")])
-    .optional()
-    .transform((value) => (value === "" ? undefined : value)),
+    .optional(),
   notes: z
     .union([z.string().max(200, "Catatan terlalu panjang"), z.literal("")])
-    .optional()
-    .transform((value) => (value === "" ? undefined : value)),
+    .optional(),
 })
 
 type ProductionFormData = z.infer<typeof productionSchema>
@@ -67,7 +60,7 @@ export function ProductionLogForm({ recipes, products }: ProductionLogFormProps)
   const form = useForm<ProductionFormData>({
     resolver: zodResolver(productionSchema),
     defaultValues: {
-      recipe_id: recipes.length > 0 ? recipes[0].id : NO_RECIPE_VALUE,
+      recipe_id: recipes.length > 0 ? recipes[0].id : "",
       product_id: products.length > 0 ? products[0].id : "",
       quantity_produced: 1,
       batch_number: undefined,
@@ -80,7 +73,7 @@ export function ProductionLogForm({ recipes, products }: ProductionLogFormProps)
   const selectedRecipeId = form.watch("recipe_id")
 
   useEffect(() => {
-    if (noProducts || !selectedRecipeId || selectedRecipeId === NO_RECIPE_VALUE) {
+    if (noProducts || !selectedRecipeId) {
       return
     }
 
@@ -94,13 +87,20 @@ export function ProductionLogForm({ recipes, products }: ProductionLogFormProps)
     setIsSubmitting(true)
 
     try {
+      const transformedValues = {
+        ...values,
+        recipe_id: !values.recipe_id || values.recipe_id === NO_RECIPE_VALUE ? undefined : values.recipe_id,
+        batch_number: values.batch_number === "" ? undefined : values.batch_number,
+        notes: values.notes === "" ? undefined : values.notes,
+      }
+
       const result = await logProduction(
         {
-          recipe_id: values.recipe_id,
-          product_id: values.product_id,
-          quantity_produced: values.quantity_produced,
-          batch_number: values.batch_number,
-          notes: values.notes,
+          recipe_id: transformedValues.recipe_id,
+          product_id: transformedValues.product_id,
+          quantity_produced: transformedValues.quantity_produced,
+          batch_number: transformedValues.batch_number,
+          notes: transformedValues.notes,
         },
         undefined,
       )
@@ -162,9 +162,6 @@ export function ProductionLogForm({ recipes, products }: ProductionLogFormProps)
                         {recipe.productName ? ` • ${recipe.productName}` : ""}
                       </SelectItem>
                     ))}
-                    <SelectItem value={NO_RECIPE_VALUE}>
-                      Tanpa resep
-                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
